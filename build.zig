@@ -11,7 +11,17 @@ pub fn build(b: *std.Build) void {
     day_01.addModule("util", util);
     b.installArtifact(day_01);
 
-    const run = b.addRunArtifact(day_01);
+    const day_02 = b.addExecutable(.{ .name = "Day_02", .root_source_file = .{ .path = "src/day_02/day_02.zig" } });
+    day_02.addModule("util", util);
+    b.installArtifact(day_02);
+
+    const day_02_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_02/day_02.zig" } });
+    day_02_test.addModule("util", util);
+
+    const run_tests = b.addRunArtifact(day_02_test);
+    b.step("test", "Run Tests").dependOn(&run_tests.step);
+
+    const run = b.addRunArtifact(day_02);
     if (b.args) |args| {
         run.addArgs(args);
     }
