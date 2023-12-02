@@ -159,6 +159,10 @@ pub fn main() !void {
     defer games.deinit();
     defer for (games.items) |game| game.samples.deinit(); // TODO: Iterate over nonconst and directly call game.deinit()
 
+    var timer_start = std.time.nanoTimestamp();
     std.debug.print("Day 02 Solution 1: {}\n", .{task_01(games)});
+    std.debug.print("Time: {d:.5}ms\n", .{@as(f64, @floatFromInt(std.time.nanoTimestamp() - time_start)) / 1_000_000.0});
+    var time_start_2 = std.time.nanoTimestamp();
     std.debug.print("Day 02 Solution 2: {}\n", .{task_02(games)});
+    std.debug.print("Time: {d:.5}ms\n", .{@as(f64, @floatFromInt(std.time.nanoTimestamp() - time_start_2)) / 1_000_000.0});
 }
