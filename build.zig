@@ -1,5 +1,12 @@
 const std = @import("std");
 
+fn addDay(b: *std.Build, name: []const u8, path: []const u8, util: *std.Build.Module) void {
+    _ = util;
+    _ = path;
+    _ = name;
+    _ = b;
+}
+
 pub fn build(b: *std.Build) void {
     const util = b.createModule(.{ .source_file = .{ .path = "src/util/util.zig" } });
 
@@ -18,10 +25,17 @@ pub fn build(b: *std.Build) void {
     const day_02_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_02/day_02.zig" } });
     day_02_test.addModule("util", util);
 
-    const run_tests = b.addRunArtifact(day_02_test);
+    const day_03 = b.addExecutable(.{ .name = "Day_03", .root_source_file = .{ .path = "src/day_03/day_03.zig" } });
+    day_03.addModule("util", util);
+    b.installArtifact(day_03);
+
+    const day_03_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_03/day_03.zig" } });
+    day_03_test.addModule("util", util);
+
+    const run_tests = b.addRunArtifact(day_03_test);
     b.step("test", "Run Tests").dependOn(&run_tests.step);
 
-    const run = b.addRunArtifact(day_02);
+    const run = b.addRunArtifact(day_03);
     if (b.args) |args| {
         run.addArgs(args);
     }

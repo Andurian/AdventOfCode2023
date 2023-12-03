@@ -1,5 +1,9 @@
 const std = @import("std");
 
+pub fn print(comptime fmt: []const u8, args: anytype) void {
+    std.debug.print(fmt, args);
+}
+
 pub fn readFile(filename: []const u8, allocator: std.mem.Allocator) ![][]u8 {
     var file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
