@@ -32,10 +32,17 @@ pub fn build(b: *std.Build) void {
     const day_03_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_03/day_03.zig" } });
     day_03_test.addModule("util", util);
 
-    const run_tests = b.addRunArtifact(day_03_test);
+    const day_04 = b.addExecutable(.{ .name = "Day_04", .root_source_file = .{ .path = "src/day_04/day_04.zig" } });
+    day_04.addModule("util", util);
+    b.installArtifact(day_04);
+
+    const day_04_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_04/day_04.zig" } });
+    day_04_test.addModule("util", util);
+
+    const run_tests = b.addRunArtifact(day_04_test);
     b.step("test", "Run Tests").dependOn(&run_tests.step);
 
-    const run = b.addRunArtifact(day_03);
+    const run = b.addRunArtifact(day_04);
     if (b.args) |args| {
         run.addArgs(args);
     }
