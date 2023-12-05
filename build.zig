@@ -1,51 +1,46 @@
 const std = @import("std");
 
-fn addDay(b: *std.Build, name: []const u8, path: []const u8, util: *std.Build.Module) void {
-    _ = util;
-    _ = path;
-    _ = name;
-    _ = b;
+const Unit = struct {
+    day_exe: *std.Build.Step.Compile,
+    day_test: *std.Build.Step.Compile,
+};
+
+fn addDay(b: *std.Build, name: []const u8, path: []const u8, util: *std.Build.Module, optimize: std.builtin.Mode) Unit {
+    const day_exe = b.addExecutable(.{ .name = name, .root_source_file = .{ .path = path }, .optimize = optimize });
+    day_exe.addModule("util", util);
+    b.installArtifact(day_exe);
+
+    const day_test = b.addTest(.{ .root_source_file = .{ .path = path } });
+    day_test.addModule("util", util);
+
+    return .{ .day_exe = day_exe, .day_test = day_test };
 }
 
-pub fn build(b: *std.Build) void {
-    const util = b.createModule(.{ .source_file = .{ .path = "src/util/util.zig" } });
-
-    const main = b.addExecutable(.{ .name = "AdventOfCode_2023", .root_source_file = .{ .path = "src/main.zig" } });
-    main.addModule("util", util);
-    b.installArtifact(main);
-
-    const day_01 = b.addExecutable(.{ .name = "Day_01", .root_source_file = .{ .path = "src/day_01/day_01.zig" } });
-    day_01.addModule("util", util);
-    b.installArtifact(day_01);
-
-    const day_02 = b.addExecutable(.{ .name = "Day_02", .root_source_file = .{ .path = "src/day_02/day_02.zig" } });
-    day_02.addModule("util", util);
-    b.installArtifact(day_02);
-
-    const day_02_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_02/day_02.zig" } });
-    day_02_test.addModule("util", util);
-
-    const day_03 = b.addExecutable(.{ .name = "Day_03", .root_source_file = .{ .path = "src/day_03/day_03.zig" } });
-    day_03.addModule("util", util);
-    b.installArtifact(day_03);
-
-    const day_03_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_03/day_03.zig" } });
-    day_03_test.addModule("util", util);
-
-    const day_04 = b.addExecutable(.{ .name = "Day_04", .root_source_file = .{ .path = "src/day_04/day_04.zig" } });
-    day_04.addModule("util", util);
-    b.installArtifact(day_04);
-
-    const day_04_test = b.addTest(.{ .root_source_file = .{ .path = "src/day_04/day_04.zig" } });
-    day_04_test.addModule("util", util);
-
-    const run_tests = b.addRunArtifact(day_04_test);
+fn makeCurrent(b: *std.Build, day: Unit) void {
+    const run_tests = b.addRunArtifact(day.day_test);
     b.step("test", "Run Tests").dependOn(&run_tests.step);
 
-    const run = b.addRunArtifact(day_04);
+    const run = b.addRunArtifact(day.day_exe);
     if (b.args) |args| {
         run.addArgs(args);
     }
 
-    b.step("runall", "Run all days after each other").dependOn(&run.step);
+    b.step("run", "Run the current day").dependOn(&run.step);
+}
+
+pub fn build(b: *std.Build) void {
+    const optimizeMode = std.builtin.OptimizeMode.ReleaseSafe;
+    const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = optimizeMode });
+
+    const util = b.createModule(.{ .source_file = .{ .path = "src/util/util.zig" } });
+
+    _ = addDay(b, "Day_01", "src/day_01/day_01.zig", util, optimize);
+    _ = addDay(b, "Day_02", "src/day_02/day_02.zig", util, optimize);
+    _ = addDay(b, "Day_03", "src/day_03/day_03.zig", util, optimize);
+    _ = addDay(b, "Day_04", "src/day_04/day_04.zig", util, optimize);
+    makeCurrent(b, addDay(b, "Day_05", "src/day_05/day_05.zig", util, optimize));
+
+    const main = b.addExecutable(.{ .name = "AdventOfCode_2023", .root_source_file = .{ .path = "src/main.zig" } });
+    main.addModule("util", util);
+    b.installArtifact(main);
 }
