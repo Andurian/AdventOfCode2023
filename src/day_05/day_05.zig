@@ -332,6 +332,9 @@ pub fn main() !void {
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
+    const sleep = std.fmt.parseInt(u32, args[2], 10) catch unreachable;
+    util.sleep(sleep);
+
     var input = try util.readFile(args[1], allocator);
     defer allocator.free(input);
     defer for (input) |i| allocator.free(i);
@@ -351,4 +354,6 @@ pub fn main() !void {
 
     std.debug.print("Day 05 Solution 1: {}\n", .{task_01(pipeline, seeds.items)});
     std.debug.print("Day 05 Solution 2: {}\n", .{task_02_smart(pipeline, seeds.items, allocator)});
+
+    util.sleep(sleep);
 }

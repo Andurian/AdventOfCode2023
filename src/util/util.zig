@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const closure = @import("closure.zig");
+const InputSource = enum { Test, Arg };
 
 pub fn print(comptime fmt: []const u8, args: anytype) void {
     std.debug.print(fmt, args);
@@ -25,7 +25,7 @@ pub fn readFile(filename: []const u8, allocator: std.mem.Allocator) ![][]u8 {
             else => return err,
         };
 
-        if (line.getLast() == '\r') {
+        if (line.items.len > 0 and line.getLast() == '\r') {
             _ = line.pop();
         }
 
@@ -48,4 +48,27 @@ pub fn appendIfNotContains(comptime T: type, list: *std.ArrayList(T), val: T) vo
     if (!contains(T, list.*, val)) {
         list.append(val) catch unreachable;
     }
+}
+
+pub fn sleep(seconds: u32) void {
+    print("Sleeping", .{});
+    for (0..seconds) |_| {
+        std.time.sleep(1e9);
+        print(".", .{});
+    }
+    print("\n", .{});
+}
+
+pub fn max2(comptime T: type, arr: []T) [2]T {
+    var max_1: T = 0;
+    var max_2: T = 0;
+    for (arr) |i| {
+        if (i > max_1) {
+            max_2 = max_1;
+            max_1 = i;
+        } else if (i > max_2) {
+            max_2 = i;
+        }
+    }
+    return [_]T{ max_1, max_2 };
 }
