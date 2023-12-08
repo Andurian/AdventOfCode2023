@@ -72,3 +72,7 @@ pub fn max2(comptime T: type, arr: []T) [2]T {
     }
     return [_]T{ max_1, max_2 };
 }
+
+pub fn lcm(lhs: anytype, rhs: anytype) @TypeOf(lhs, rhs) {
+    return (lhs * rhs) / std.math.gcd(lhs, rhs);
+}
