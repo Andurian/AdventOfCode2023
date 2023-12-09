@@ -41,7 +41,8 @@ pub fn build(b: *std.Build) void {
     _ = addDay(b, "Day_05", "src/day_05/day_05.zig", util, optimize);
     _ = addDay(b, "Day_06", "src/day_06/day_06.zig", util, optimize);
     _ = addDay(b, "Day_07", "src/day_07/day_07.zig", util, optimize);
-    makeCurrent(b, addDay(b, "Day_08", "src/day_08/day_08.zig", util, optimize));
+    _ = addDay(b, "Day_08", "src/day_08/day_08.zig", util, optimize);
+    makeCurrent(b, addDay(b, "Day_09", "src/day_09/day_09.zig", util, optimize));
 
     const main = b.addExecutable(.{ .name = "AdventOfCode_2023", .root_source_file = .{ .path = "src/main.zig" } });
     main.addModule("util", util);

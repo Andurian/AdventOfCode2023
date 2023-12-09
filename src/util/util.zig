@@ -76,3 +76,10 @@ pub fn max2(comptime T: type, arr: []T) [2]T {
 pub fn lcm(lhs: anytype, rhs: anytype) @TypeOf(lhs, rhs) {
     return (lhs * rhs) / std.math.gcd(lhs, rhs);
 }
+
+pub fn allEqual(comptime T: type, val: T, seq: []T) bool {
+    for (seq) |v| {
+        if (!std.meta.eql(v, val)) return false;
+    }
+    return true;
+}
