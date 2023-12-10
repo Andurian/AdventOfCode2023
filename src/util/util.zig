@@ -83,3 +83,12 @@ pub fn allEqual(comptime T: type, val: T, seq: []T) bool {
     }
     return true;
 }
+
+pub fn contains_(comptime T: type, seq: []const T, val: T) bool {
+    for (seq) |v| {
+        if (std.meta.eql(v, val)) {
+            return true;
+        }
+    }
+    return false;
+}
