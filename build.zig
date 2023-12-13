@@ -29,7 +29,7 @@ fn makeCurrent(b: *std.Build, day: Unit) void {
 }
 
 pub fn build(b: *std.Build) void {
-    const optimizeMode = std.builtin.OptimizeMode.Debug;
+    const optimizeMode = std.builtin.OptimizeMode.ReleaseFast;
     const optimize = b.standardOptimizeOption(.{ .preferred_optimize_mode = optimizeMode });
 
     const util = b.createModule(.{ .source_file = .{ .path = "src/util/util.zig" } });
@@ -44,7 +44,8 @@ pub fn build(b: *std.Build) void {
     _ = addDay(b, "Day_08", "src/day_08/day_08.zig", util, optimize);
     _ = addDay(b, "Day_09", "src/day_09/day_09.zig", util, optimize);
     _ = addDay(b, "Day_10", "src/day_10/day_10.zig", util, optimize);
-    makeCurrent(b, addDay(b, "Day_11", "src/day_11/day_11.zig", util, optimize));
+    _ = addDay(b, "Day_11", "src/day_11/day_11.zig", util, optimize);
+    makeCurrent(b, addDay(b, "Day_13", "src/day_13/day_13.zig", util, optimize));
 
     const main = b.addExecutable(.{ .name = "AdventOfCode_2023", .root_source_file = .{ .path = "src/main.zig" } });
     main.addModule("util", util);
