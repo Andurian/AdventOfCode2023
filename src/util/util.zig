@@ -1,10 +1,14 @@
 const std = @import("std");
 
-const InputSource = enum { Test, Arg };
+const out = @import("out.zig");
+pub const print = out.print;
 
-pub fn print(comptime fmt: []const u8, args: anytype) void {
-    std.debug.print(fmt, args);
-}
+pub const field = @import("field.zig");
+pub const Field = field.Field;
+pub const Direction = field.Direction;
+pub const Point = field.Point;
+
+const InputSource = enum { Test, Arg };
 
 pub fn readFile(filename: []const u8, allocator: std.mem.Allocator) ![][]u8 {
     var file = try std.fs.cwd().openFile(filename, .{});
@@ -75,6 +79,14 @@ pub fn max2(comptime T: type, arr: []T) [2]T {
 
 pub fn lcm(lhs: anytype, rhs: anytype) @TypeOf(lhs, rhs) {
     return (lhs * rhs) / std.math.gcd(lhs, rhs);
+}
+
+pub fn traits(comptime T: type) type {
+    return struct {
+        pub fn id(v: T) T {
+            return v;
+        }
+    };
 }
 
 pub fn allEqual(comptime T: type, val: T, seq: []T) bool {
