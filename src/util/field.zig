@@ -98,6 +98,27 @@ pub fn Field(comptime T: type) type {
             }
         };
 
+        const PositionIterator = struct {
+            row: i32 = 0,
+            col: i32 = 0,
+
+            f: Self,
+
+            pub fn next(self: *PositionIterator) ?Point {
+                if (self.row >= self.f.height) return null;
+                const ret = Point{ .row = self.row, .col = self.col };
+
+                if (self.col == self.f.width - 1) {
+                    self.col = 0;
+                    self.row += 1;
+                } else {
+                    self.col += 1;
+                }
+
+                return ret;
+            }
+        };
+
         pub fn initFromInput(input: [][]const u8, comptime convert: fn (u8) T, allocator: std.mem.Allocator) Self {
             const height = input.len;
             const width = input[0].len;
@@ -170,6 +191,10 @@ pub fn Field(comptime T: type) type {
         }
 
         pub fn iterator(self: Self) Iterator {
+            return .{ .f = self };
+        }
+
+        pub fn positionIterator(self: Self) PositionIterator {
             return .{ .f = self };
         }
 
