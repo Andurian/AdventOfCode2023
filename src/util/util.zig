@@ -104,3 +104,23 @@ pub fn contains_(comptime T: type, seq: []const T, val: T) bool {
     }
     return false;
 }
+
+const Extent = struct {
+    minCol: i32 = std.math.maxInt(i32),
+    maxCol: i32 = std.math.minInt(i32),
+    minRow: i32 = std.math.maxInt(i32),
+    maxRow: i32 = std.math.minInt(i32),
+};
+
+pub fn extent(arr: []const Point) Extent {
+    var ret = Extent{};
+
+    for (arr) |pos| {
+        ret.minCol = @min(ret.minCol, pos.col);
+        ret.maxCol = @max(ret.maxCol, pos.col);
+
+        ret.minRow = @min(ret.minRow, pos.row);
+        ret.maxRow = @max(ret.maxRow, pos.row);
+    }
+    return ret;
+}
