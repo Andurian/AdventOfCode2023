@@ -105,6 +105,16 @@ pub fn contains_(comptime T: type, seq: []const T, val: T) bool {
     return false;
 }
 
+pub fn count(comptime T: type, seq: []const T, val: T) u64 {
+    var acc: u64 = 0;
+    for (seq) |v| {
+        if (v == val) {
+            acc += 1;
+        }
+    }
+    return acc;
+}
+
 const Extent = struct {
     minCol: i32 = std.math.maxInt(i32),
     maxCol: i32 = std.math.minInt(i32),
