@@ -48,6 +48,13 @@ pub fn contains(comptime T: type, list: std.ArrayList(T), val: T) bool {
     return false;
 }
 
+pub fn firstOf(comptime T: type, arr: []T, val: T) ?usize {
+    for (arr, 0..) |v, i| {
+        if (std.meta.eql(v, val)) return i;
+    }
+    return null;
+}
+
 pub fn appendIfNotContains(comptime T: type, list: *std.ArrayList(T), val: T) void {
     if (!contains(T, list.*, val)) {
         list.append(val) catch unreachable;

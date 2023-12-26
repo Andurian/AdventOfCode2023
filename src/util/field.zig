@@ -212,5 +212,27 @@ pub fn Field(comptime T: type) type {
                 out.print("\n", .{});
             }
         }
+
+        pub fn debugPrint(self: Self) void {
+            const w: usize = @intCast(self.width);
+            const h: usize = @intCast(self.height);
+
+            var row: usize = 0;
+            while (row < h) : (row += 1) {
+                var col: usize = 0;
+                while (col < w) : (col += 1) {
+                    const iData = (row * w) + col;
+                    out.print("{:5}", .{self.data[iData]});
+                }
+                out.print("\n", .{});
+            }
+        }
+
+        pub fn clone(self: Self) Field(T) {
+            var data = self.allocator.alloc(T, @intCast(self.width * self.height)) catch unreachable;
+            @memcpy(data, self.data);
+
+            return .{ .data = data, .width = self.width, .height = self.height, .allocator = self.allocator };
+        }
     };
 }
